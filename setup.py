@@ -11,7 +11,7 @@ setup(
     install_requires=[],
     description='Django email tools.',
     license='LICENSE.txt',
-    url='http://gitorious.hzdesign.com/southernmanagement/job_listings',
+    url='http://gitorious.hzdesign.com/django-emailtools/django-emailtools',
     long_description=open('README').read(),
     zip_safe = False,
     classifiers = [
