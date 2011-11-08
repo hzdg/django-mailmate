@@ -1,83 +1,108 @@
 from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
-from django.template import Context
-import copy
+from django.template import Context, loader
 
 
 __version__ = (0, 1, 0)
 
 
-class EmailGeneratorBase(object):
+class BaseTemplatedEmailMessage(EmailMultiAlternatives):
     """
-    Email Processor is a essentially a view for rendering email templates
-    and sending them.
-    """    
-    standard_template = ''
-    html_template = ''
-    
-    to = []
-    from_email = ''
-    subject = ''
-    
-    def __init__(self, **kwargs):
-        for key, value in kwargs.iteritems():
-            setattr(self, key, value)
-    
-    def get_standard_template(self):
-        return self.standard_template
+    """
+    def __init__(self, subject='', body='', from_email=None, to=None, bcc=None,
+            connection=None, attachments=None, headers=None, alternatives=None,
+            cc=None, standard_template=None, alternative_template=None):
         
-    def get_html_template(self):
-        return self.html_template
-    
+        self.standard_template = standard_template
+        self.alternative_template = alternative_template
+        
+        # TODO: should user pass in mime type as seperate property or a tuple with the 
+        # alternative_template path and mimetype ?
+
+
+    def get_standard_templates(self, *args, **kwargs):
+        """
+        Returns a list of "standard template" names. Must return a list.
+        """
+        return [ self.standard_template ]
+        if self.standard_template is None:
+            raise ImproperlyConfigured(
+                "TemplatedEmailMessage requires either a definition of "
+                "'standard_template' or an implementation of 'get_standard_templates()'")
+        else:
+            return [self.standard_template]
+
+    def get_alternative_templates(self, *args, **kwargs):
+        """
+        Returns a list of "alternative template" names. Must return a list.
+        """
+        return [ self.alternative_template ]
+        if self.alternative_template is None:
+            raise ImproperlyConfigured(
+                "TemplatedEmailMessage requires either a definition of "
+                "'alternative_template' or an implementation of 'get_alternative_templates()'")
+        else:
+            return [self.alternative_template]
+
     def get_context_data(self, context_dict):
         return context_dict
-    
+
     def get_context(self, context_dict = {}):
         return Context(self.get_context_data(context_dict))
 
+
     def _render_standard_template(self):
-        template = get_template(self.get_standard_template())
+        """
+        Renders standard template with context
+        """
+        template = loader.get_template(self.get_standard_templates()[0])
         return template.render(self.get_context())
+
+    def _render_alternative_template(self):
+        """
+        Renders alternative template with context
+        """
+        template = loader.get_template(self.get_alternative_templates()[0])
+        return template.render(self.get_context())    
     
-    def _render_html_template(self):
-        template = get_template(self.get_html_template())
-        return template.render(self.get_context())
     
-    def _send(self):
-        if not isinstance(self.to, list):
-            self.to = [self.to]
-            
-        msg = EmailMultiAlternatives(self.subject, 
-                self._render_standard_template(), self.from_email, self.to)
-        if self.get_html_template():
-            msg.attach_alternative(self._render_html_template(), "text/html")
-        msg.send()
-    
-    def send(self):
-        self._send()
+    def send(self, fail_silently=False):
+        
+        if self.alternative_template:
+            self.attach_alternative(self._render_alternative_template())
+        
+        return super(TemplatedEmailMessage, self).send(fail_silently)
+        
+        
 
 
-class EmailGenerator(EmailGeneratorBase):
+class TemplatedEmailMessage(BaseTemplatedEmailMessage):
     pass
 
 
-class EmailFormGenerator(EmailGenerator):
+# class EmailFormGenerator(EmailGenerator):
+# 
+#     context_overrides = {}
+#     
+#     def __init__(self, form_instance, **kwargs):
+#         super(EmailFormGenerator, self).__init__(**kwargs)
+#         self.form = form_instance
+#         
+#     def _get_context_from_form(self):
+#         if not self.form.is_valid():
+#             raise Exception("")
+#         return self.form.cleaned_data
+#         
+#     
+#     def get_context_data(self, context_dict):
+#         context_dict = super(EmailFormGenerator, self).get_context_data(context_dict)
+#         form_context = self._get_context_from_form()
+#         context_dict.update(form_context)
+#         context_dict['all_fields'] = copy.deepcopy(form_context)
+#         context_dict.update(self.context_overrides)
+#         return context_dict
 
-    context_overrides = {}
-    
-    def __init__(self, form_instance, **kwargs):
-        super(EmailFormGenerator, self).__init__(**kwargs)
-        self.form = form_instance
-        
-    def _get_context_from_form(self):
-        if self.form.is_valid():
-            return self.form.cleaned_data
-        return None
-    
-    def get_context_data(self, context_dict):
-        context_dict = super(EmailFormGenerator, self).get_context_data(context_dict)
-        form_context = self._get_context_from_form()
-        context_dict.update(form_context)
-        context_dict['all_fields'] = copy.deepcopy(form_context)
-        context_dict.update(self.context_overrides)
-        return context_dict
+
+# class MyMessage(EmailGenerator):
+#     subject = 'Hey Dudes'
+#     template = 'a/b/c.txt'
+#     html_template = 'a/b/c.html'
