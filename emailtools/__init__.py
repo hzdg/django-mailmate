@@ -55,9 +55,10 @@ class BaseTemplatedEmailMessage(EmailMultiAlternatives):
         else:
             return [self.html_template]
 
-    def get_context_data(self, context_dict):
-        self.extra_context.update(context_dict)
-        return self.extra_context
+    def get_context_data(self, **kwargs):
+        context_data = self.extra_context.copy() if self.extra_context else {}
+        context_data.update(kwargs)
+        return context_data
 
     def get_context(self, context_dict = {}):
         return Context(self.get_context_data(context_dict))
