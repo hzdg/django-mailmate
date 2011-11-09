@@ -3,7 +3,7 @@ import emailtools
 
 setup(
     name='Email Tools',
-    version=emailtools.__version__,
+    version='.'.join(map(str, emailtools.__version__)),
     author='Chris McKenzie',
     author_email='chrismc@hzdg.com',
     packages=find_packages(),
