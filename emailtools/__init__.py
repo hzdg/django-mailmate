@@ -60,8 +60,8 @@ class BaseTemplatedEmailMessage(EmailMultiAlternatives):
         context_data.update(kwargs)
         return context_data
 
-    def get_context(self, context_dict = {}):
-        return Context(self.get_context_data(context_dict))
+    def get_context(self, context_dict={}):
+        return Context(self.get_context_data(**context_dict))
 
     def send(self, fail_silently=False):
         self.body = self._render_template()
