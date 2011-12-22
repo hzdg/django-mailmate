@@ -12,7 +12,7 @@ class BaseTemplatedEmailMessage(EmailMultiAlternatives):
     def __init__(self, subject='', body='', from_email=None, to=None, bcc=None,
             connection=None, attachments=None, headers=None, alternatives=None,
             cc=None, template=None, html_template=None, extra_context=None):
-                
+
         subject = self._get_value('subject', subject)
         body = self._get_value('body', body)
         from_email = self._get_value('from_email', from_email)
@@ -23,16 +23,19 @@ class BaseTemplatedEmailMessage(EmailMultiAlternatives):
         headers = self._get_value('headers', headers)
         alternatives = self._get_value('alternatives', alternatives)
         cc = self._get_value('cc', cc)
-        
+        kwargs = {}
+        if cc:
+            kwargs['cc'] = cc
+
         self.template = self._get_value('template', template)
         self.html_template = self._get_value('html_template', html_template)
         self.extra_context = self._get_value('extra_context', extra_context)
-        
+
         super(BaseTemplatedEmailMessage, self).__init__(subject=subject, 
                     body=body,from_email=from_email, to=to, bcc=bcc, 
                     connection=connection,  attachments=attachments, 
-                    headers=headers, alternatives=alternatives, cc=cc)
-        
+                    headers=headers, alternatives=alternatives, **kwargs)
+
     def get_templates(self, *args, **kwargs):
         """
         Returns a list of "standard template" names. Must return a list.
