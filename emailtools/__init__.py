@@ -1,9 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import EmailMultiAlternatives
 from django.template import Context, loader
-
-
-__version__ = (0, 1, 1)
+from version import __version__
 
 
 class BaseTemplatedEmailMessage(EmailMultiAlternatives):

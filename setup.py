@@ -1,9 +1,12 @@
 from setuptools import setup, find_packages
-import emailtools
+# Execute emailtools/version.py to add __version__ to setup.py namespace.
+# This way, we avoid the django imports that are triggered by importing
+# any members of the emailtools module.
+execfile('emailtools/version.py')
 
 setup(
     name='Email Tools',
-    version='.'.join(map(str, emailtools.__version__)),
+    version='.'.join(map(str, __version__)),
     author='Chris McKenzie',
     author_email='chrismc@hzdg.com',
     packages=find_packages(),
