@@ -4,6 +4,24 @@ import email
 class CleanEmailBackend(EmailBackend):
     """ Takes email messages and splits there parts into clean messages """
 
+    '''
+            Example
+            --------
+
+            .. code-block:: python
+
+            #settings.py
+            EMAIL_BACKEND = 'emailtools.backend.CleanEmailBackend'
+            EMAIL_FILE_PATH = os.path.join(PROJECT_DIR, '../tmp', 'app-messages')
+
+            Any email that is sent will be put in the project directorys tmp dir
+            under the apps-messages directory. It will have three files for 
+            every email. 
+
+            A log with the whole email in it, a html file if there is a html 
+            template and a txt file for a txt template.
+    '''
+
     def close(self):
 
         if self.stream is not None:
