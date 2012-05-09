@@ -7,9 +7,11 @@ from version import __version__
 class BaseTemplatedEmailMessage(EmailMultiAlternatives):
     """
     """
+
     def __init__(self, subject='', body='', from_email=None, to=None, bcc=None,
             connection=None, attachments=None, headers=None, alternatives=None,
-            cc=None, template_name=None, html_template_name=None, extra_context=None):
+            cc=None, template_name=None, html_template_name=None,
+            extra_context=None):
 
         subject = self._get_value('subject', subject)
         body = self._get_value('body', body)
@@ -26,12 +28,13 @@ class BaseTemplatedEmailMessage(EmailMultiAlternatives):
             kwargs['cc'] = cc
 
         self.template_name = self._get_value('template_name', template_name)
-        self.html_template_name = self._get_value('html_template_name', html_template_name)
+        self.html_template_name = self._get_value(
+                'html_template_name', html_template_name)
         self.extra_context = self._get_value('extra_context', extra_context)
 
-        super(BaseTemplatedEmailMessage, self).__init__(subject=subject, 
-                    body=body,from_email=from_email, to=to, bcc=bcc, 
-                    connection=connection,  attachments=attachments, 
+        super(BaseTemplatedEmailMessage, self).__init__(subject=subject,
+                    body=body, from_email=from_email, to=to, bcc=bcc,
+                    connection=connection, attachments=attachments,
                     headers=headers, alternatives=alternatives, **kwargs)
 
     def get_template_names(self, *args, **kwargs):
@@ -52,7 +55,8 @@ class BaseTemplatedEmailMessage(EmailMultiAlternatives):
         if self.html_template_name is None:
             raise ImproperlyConfigured(
                 "TemplatedEmailMessage requires either a definition of "
-                "'html_template' or an implementation of 'get_html_templates()'")
+                "'html_template' or an implementation of "
+                "'get_html_templates()'")
         else:
             return [self.html_template_name]
 
@@ -84,11 +88,9 @@ class BaseTemplatedEmailMessage(EmailMultiAlternatives):
         """
         template = loader.get_template(self.get_html_template_names()[0])
         return template.render(self.get_context())
-    
+
     def _get_value(self, attr, value):
         return value or getattr(self.__class__, attr, None) or value
-        
-        
 
 
 class TemplatedEmailMessage(BaseTemplatedEmailMessage):
