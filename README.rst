@@ -8,7 +8,7 @@ How-To
 
 In Emails.py
 
-
+::
     from emailtools import TemplateMessage
 
     class CoolMessage(TemplateMessage):
@@ -20,6 +20,7 @@ In Emails.py
 
 In Views.py
 
+::
     from .emails import CoolMessage
 
     message = CoolMessage(extra_context={'user': 'You', 'is': 'Cool'})
