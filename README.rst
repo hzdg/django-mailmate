@@ -6,22 +6,23 @@ Setup
 How-To
 -----------------------------
 
-In Emails.py
+In Emails.py ::
 
-::
-    from emailtools import TemplateMessage
+    
+        from emailtools import TemplateMessage
+    
+        class CoolMessage(TemplateMessage):
+            to = ['some-user@some-email.com']
+            from = 'no-reply@some-email.com'
+            subject = 'Super Cool Message'
+            template_name = 'emails/text-template.txt'
+            html_template_name = 'emails/html-template.html'
 
-    class CoolMessage(TemplateMessage):
-        to = ['some-user@some-email.com']
-        from = 'no-reply@some-email.com'
-        subject = 'Super Cool Message'
-        template_name = 'emails/text-template.txt'
-        html_template_name = 'emails/html-template.html'
 
-In Views.py
+In Views.py ::
 
-::
-    from .emails import CoolMessage
-
-    message = CoolMessage(extra_context={'user': 'You', 'is': 'Cool'})
-    message.send()
+    
+        from .emails import CoolMessage
+    
+        message = CoolMessage(extra_context={'user': 'You', 'is': 'Cool'})
+        message.send()
