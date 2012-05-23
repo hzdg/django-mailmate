@@ -14,7 +14,7 @@ setup(
     description='Django email tools.',
     license='LICENSE.txt',
     url='http://gitorious.hzdesign.com/django-emailtools/django-emailtools',
-    long_description=open('README').read(),
+    long_description=open('README.rst').read(),
     zip_safe = False,
     classifiers = [
         'Environment :: Web Environment',
