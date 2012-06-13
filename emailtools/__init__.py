@@ -52,13 +52,9 @@ class BaseTemplatedEmailMessage(EmailMultiAlternatives):
         """
         Returns a list of "alternative template" names. Must return a list.
         """
-        if self.html_template_name is None:
-            raise ImproperlyConfigured(
-                "TemplatedEmailMessage requires either a definition of "
-                "'html_template' or an implementation of "
-                "'get_html_templates()'")
-        else:
+        if self.html_template_name is not None:
             return [self.html_template_name]
+        return None
 
     def get_context_data(self, **kwargs):
         context_data = self.extra_context.copy() if self.extra_context else {}
