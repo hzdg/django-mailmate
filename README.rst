@@ -13,7 +13,7 @@ In Emails.py ::
     
         class CoolMessage(TemplateMessage):
             to = ['some-user@some-email.com']
-            from = 'no-reply@some-email.com'
+            from_email = 'no-reply@some-email.com'
             subject = 'Super Cool Message'
             template_name = 'emails/text-template.txt'
             html_template_name = 'emails/html-template.html'
