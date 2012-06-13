@@ -92,12 +92,22 @@ class BaseTemplatedEmailMessage(EmailMultiAlternatives):
 class TemplatedEmailMessage(BaseTemplatedEmailMessage):
     """
     example:
-    class MyMessage(TemplatedEmailMessage):
-        to = ['chrismc@hzdg.com']
-        from_email = 'chrismc@hzdg.com'
-        template = 'emails/referral.html'
-        html_template = 'emails/referral-html.html'
+    In Emails.py
 
-    my_message = MyMessage(extra_context={'name': 'Chris McKenzie'})
+        from emailtools import TemplateMessage
+
+        class CoolMessage(TemplateMessage):
+            to = ['some-user@some-email.com']
+            from_email = 'no-reply@some-email.com'
+            subject = 'Super Cool Message'
+            template_name = 'emails/text-template.txt'
+            html_template_name = 'emails/html-template.html'
+
+    In Views.py
+
+        from .emails import CoolMessage
+
+        message = CoolMessage(extra_context={'user': 'You', 'is': 'Cool'})
+        message.send()
     """
     pass
