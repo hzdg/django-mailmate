@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 execfile('emailtools/version.py')
 
 setup(
-    name='Email Tools',
+    name='django-emailtools',
     version='.'.join(map(str, __version__)),
     author='Chris McKenzie',
     author_email='chrismc@hzdg.com',
