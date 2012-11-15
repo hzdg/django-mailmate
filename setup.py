@@ -22,6 +22,7 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
     ],
     setup_requires=[
+        'Django>=1.2',
         'versiontools >= 1.8',
     ]
 )
