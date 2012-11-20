@@ -18,6 +18,9 @@ setup(
     url='http://github.com/hzdg/django-emailtools',
     long_description=open('README.rst').read(),
     zip_safe = False,
+    install_requires=[
+        'Django>=1.2',
+    ],
     classifiers = [
         'Environment :: Web Environment',
         'Framework :: Django',
