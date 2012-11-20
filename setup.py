@@ -1,9 +1,14 @@
+import os
 from setuptools import setup, find_packages
 
 
+pkgmeta = {}
+execfile(os.path.join(os.path.dirname(__file__),
+         'emailtools', 'pkgmeta.py'), pkgmeta)
+
 setup(
     name='django-emailtools',
-    version=':versiontools:emailtools:',
+    version='.'.join(map(str, pkgmeta['__version__'])),
     author='Chris McKenzie',
     author_email='chrismc@hzdg.com',
     packages=find_packages(),
@@ -21,8 +26,4 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP',
     ],
-    setup_requires=[
-        'Django>=1.2',
-        'versiontools >= 1.8',
-    ]
 )
