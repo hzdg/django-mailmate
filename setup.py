@@ -61,7 +61,7 @@ setup(
     packages=find_packages(),
     include_package_data=False,
     description='Django email tools.',
-    license='LICENSE.txt',
+    license='MIT',
     url='http://github.com/hzdg/django-mailmate',
     long_description=open('README.rst').read(),
     zip_safe=False,
