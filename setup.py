@@ -1,5 +1,5 @@
 import os
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Command
 from setuptools.command.test import test as TestCommand
 import sys
 
@@ -22,6 +22,37 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
+class LintCommand(Command):
+    """
+    A copy of flake8's Flake8Command
+
+    """
+    description = "Run flake8 on modules registered in setuptools"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def distribution_files(self):
+        if self.distribution.packages:
+            for package in self.distribution.packages:
+                yield package.replace(".", os.path.sep)
+
+        if self.distribution.py_modules:
+            for filename in self.distribution.py_modules:
+                yield "%s.py" % filename
+
+    def run(self):
+        from flake8.engine import get_style_guide
+        flake8_style = get_style_guide(config_file='setup.cfg')
+        paths = self.distribution_files()
+        report = flake8_style.check_files(paths)
+        raise SystemExit(report.total_errors > 0)
+
+
 setup(
     name='django-mailmate',
     version=pkgmeta['__version__'],
@@ -34,6 +65,9 @@ setup(
     url='http://github.com/hzdg/django-mailmate',
     long_description=open('README.rst').read(),
     zip_safe = False,
+    setup_requires=[
+        'flake8',
+    ],
     tests_require=[
         'pytest-django',
     ],
@@ -48,5 +82,8 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP',
     ],
-    cmdclass={'test': PyTest},
+    cmdclass={
+        'test': PyTest,
+        'lint': LintCommand,
+    },
 )
