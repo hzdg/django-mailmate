@@ -24,7 +24,7 @@ class PyTest(TestCommand):
 
 setup(
     name='django-mailmate',
-    version='.'.join(map(str, pkgmeta['__version__'])),
+    version=pkgmeta['__version__'],
     author='Chris McKenzie',
     author_email='chrismc@hzdg.com',
     packages=find_packages(),
