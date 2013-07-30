@@ -1,10 +1,26 @@
 import os
 from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
+import sys
 
 
 pkgmeta = {}
 execfile(os.path.join(os.path.dirname(__file__),
          'mailmate', 'pkgmeta.py'), pkgmeta)
+
+
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = ['tests', '-s']
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+        errno = pytest.main(self.test_args)
+        sys.exit(errno)
+
 
 setup(
     name='django-mailmate',
@@ -18,6 +34,9 @@ setup(
     url='http://github.com/hzdg/django-mailmate',
     long_description=open('README.rst').read(),
     zip_safe = False,
+    tests_require=[
+        'pytest-django',
+    ],
     install_requires=[
         'Django>=1.2',
     ],
@@ -29,4 +48,5 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP',
     ],
+    cmdclass={'test': PyTest},
 )
