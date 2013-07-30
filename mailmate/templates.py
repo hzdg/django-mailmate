@@ -93,7 +93,7 @@ class TemplatedEmailMessage(BaseTemplatedEmailMessage):
     example:
     In Emails.py
 
-        from emailtools import TemplateMessage
+        from mailmate import TemplateMessage
 
         class CoolMessage(TemplateMessage):
             to = ['some-user@some-email.com']

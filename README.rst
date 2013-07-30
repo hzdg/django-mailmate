@@ -1,16 +1,16 @@
 Setup
 ---------------------------
 
-``pip install -e git+git@github.com:hzdg/django-emailtools.git#egg=django-emailtools``
+``pip install django-mailmate``
 
 How-To
 -----------------------------
 
 In emails.py ::
 
-    
-        from emailtools.templates import TemplatedEmailMessage
-    
+
+        from mailmate.templates import TemplatedEmailMessage
+
         class CoolMessage(TemplatedEmailMessage):
             to = ['some-user@some-email.com']
             from_email = 'no-reply@some-email.com'
@@ -21,6 +21,6 @@ In emails.py ::
 
 In views.py ::
 
-    
+
         from .emails import CoolMessage
         CoolMessage(extra_context={'user': 'You', 'is': 'Cool'}).send()

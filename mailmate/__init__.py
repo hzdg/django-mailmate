@@ -1,2 +1,2 @@
-from emailtools.pkgmeta import *
+from mailmate.pkgmeta import *
 from .templates import BaseTemplatedEmailMessage, TemplatedEmailMessage

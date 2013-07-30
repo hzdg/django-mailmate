@@ -1,4 +1,4 @@
 import warnings
-from emailtools.backends import *
+from mailmate.backends import *
 
 warnings.warn("backend module is deprecated.", DeprecationWarning)

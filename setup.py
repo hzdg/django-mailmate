@@ -4,10 +4,10 @@ from setuptools import setup, find_packages
 
 pkgmeta = {}
 execfile(os.path.join(os.path.dirname(__file__),
-         'emailtools', 'pkgmeta.py'), pkgmeta)
+         'mailmate', 'pkgmeta.py'), pkgmeta)
 
 setup(
-    name='django-emailtools',
+    name='django-mailmate',
     version='.'.join(map(str, pkgmeta['__version__'])),
     author='Chris McKenzie',
     author_email='chrismc@hzdg.com',
@@ -15,7 +15,7 @@ setup(
     include_package_data=False,
     description='Django email tools.',
     license='LICENSE.txt',
-    url='http://github.com/hzdg/django-emailtools',
+    url='http://github.com/hzdg/django-mailmate',
     long_description=open('README.rst').read(),
     zip_safe = False,
     install_requires=[
