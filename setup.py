@@ -64,7 +64,7 @@ setup(
     license='LICENSE.txt',
     url='http://github.com/hzdg/django-mailmate',
     long_description=open('README.rst').read(),
-    zip_safe = False,
+    zip_safe=False,
     setup_requires=[
         'flake8',
     ],
@@ -74,7 +74,7 @@ setup(
     install_requires=[
         'Django>=1.2',
     ],
-    classifiers = [
+    classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',

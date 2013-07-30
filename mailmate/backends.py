@@ -38,8 +38,7 @@ class CleanEmailBackend(EmailBackend):
                 self._write_message(m)
         else:
             content_type = message.get_content_type()
-            ext = '.txt' if content_type == 'text/plain' else \
-                    mimetypes.guess_extension(content_type)
+            ext = '.txt' if content_type == 'text/plain' else mimetypes.guess_extension(content_type)
             if ext:
                 self._write_file(message.get_payload(decode=True), ext)
 
