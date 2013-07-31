@@ -1,6 +1,6 @@
-from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import EmailMultiAlternatives
 from django.template import Template, Context, loader
+from .exceptions import MissingBody
 
 
 class TemplatedEmailMessage(EmailMultiAlternatives):
@@ -59,17 +59,6 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
             connection=connection, attachments=attachments,
             headers=headers, alternatives=alternatives, **kwargs)
 
-    def get_template_names(self, *args, **kwargs):
-        """
-        Returns a list of "standard template" names. Must return a list.
-        """
-        if self.template_name is None:
-            raise ImproperlyConfigured(
-                "TemplatedEmailMessage requires either a definition of "
-                "'template' or an implementation of 'get_template_names()'")
-        else:
-            return [self.template_name]
-
     def get_html_template_names(self, *args, **kwargs):
         """
         Returns a list of "alternative template" names. Must return a list.
@@ -88,10 +77,15 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
         """
         Renders standard template with context
         """
-        if self.body_template is None:
-            template = loader.get_template(self.get_template_names()[0])
-        else:
+        if self.body_template is not None:
             template = Template(self.body_template)
+        elif self.template_name is not None:
+            template = loader.get_template(self.template_name)
+        else:
+            raise MissingBody('The email does not have a body. Either provide'
+                              ' a body or template_name or, if you really want'
+                              ' to send an email without a body, set the body'
+                              ' to an empty string explicitly.')
         return template.render(self.get_context())
 
     def render_subject(self):

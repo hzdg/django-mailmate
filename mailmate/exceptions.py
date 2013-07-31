@@ -1,0 +1,2 @@
+class MissingBody(Exception):
+    pass
