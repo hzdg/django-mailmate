@@ -11,6 +11,15 @@ def test_optional_template():
     Email().message()
 
 
+def test_body_template():
+    """
+    The body string can be a template.
+    """
+    email = TemplatedEmailMessage(body='hello {{ name }}',
+                                  extra_context={'name': 'world'})
+    assert email.body == 'hello world'
+
+
 def test_template():
     class Email(TemplatedEmailMessage):
         template_name = 'body.txt'
