@@ -3,16 +3,6 @@ from mailmate.exceptions import MissingBody
 import pytest
 
 
-def test_optional_template():
-    """
-    If a body is included, you shouldn't need to define template.
-    """
-    class Email(TemplatedEmailMessage):
-        body = 'hello world'
-
-    Email().message()
-
-
 def test_body_required():
     """
     You must define either a body or a template.
