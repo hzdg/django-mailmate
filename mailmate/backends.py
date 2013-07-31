@@ -14,7 +14,7 @@ class CleanEmailBackend(EmailBackend):
             .. code-block:: python
 
             #settings.py
-            EMAIL_BACKEND = 'emailtools.backend.CleanEmailBackend'
+            EMAIL_BACKEND = 'mailmate.backend.CleanEmailBackend'
             EMAIL_FILE_PATH = os.path.join(PROJECT_DIR, '../tmp', 'app-messages')
 
             Any email that is sent will be put in the project directorys tmp dir
@@ -38,8 +38,7 @@ class CleanEmailBackend(EmailBackend):
                 self._write_message(m)
         else:
             content_type = message.get_content_type()
-            ext = '.txt' if content_type == 'text/plain' else \
-                    mimetypes.guess_extension(content_type)
+            ext = '.txt' if content_type == 'text/plain' else mimetypes.guess_extension(content_type)
             if ext:
                 self._write_file(message.get_payload(decode=True), ext)
 

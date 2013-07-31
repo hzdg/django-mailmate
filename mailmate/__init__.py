@@ -1,2 +1,3 @@
-from emailtools.pkgmeta import *
+# flake8: noqa
+from mailmate.pkgmeta import *
 from .templates import BaseTemplatedEmailMessage, TemplatedEmailMessage
