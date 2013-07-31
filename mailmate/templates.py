@@ -50,22 +50,15 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
         self.extra_context = self._get_value('extra_context', extra_context)
 
         alternatives = alternatives or []
-        if self.html_template_name:
-            alternatives.append((self.render_html_body(), 'text/html'))
+        html_body = self.render_html_body()
+        if html_body is not None:
+            alternatives.append((html_body, 'text/html'))
 
         super(TemplatedEmailMessage, self).__init__(
             subject=self.render_subject(),
             body=self.render_body(), from_email=from_email, to=to, bcc=bcc,
             connection=connection, attachments=attachments,
             headers=headers, alternatives=alternatives, **kwargs)
-
-    def get_html_template_names(self, *args, **kwargs):
-        """
-        Returns a list of "alternative template" names. Must return a list.
-        """
-        if self.html_template_name is not None:
-            return [self.html_template_name]
-        return None
 
     def get_context_data(self):
         return self.extra_context.copy() if self.extra_context else {}
@@ -95,8 +88,9 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
         """
         Renders alternative template with context
         """
-        template = loader.get_template(self.get_html_template_names()[0])
-        return template.render(self.get_context())
+        if self.html_template_name:
+            template = loader.get_template(self.html_template_name)
+            return template.render(self.get_context())
 
     def _get_value(self, attr, value):
         return value or getattr(self.__class__, attr, None) or value
