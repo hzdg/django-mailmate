@@ -1,4 +1,6 @@
 from mailmate import TemplatedEmailMessage
+from mailmate.exceptions import MissingBody
+import pytest
 
 
 def test_optional_template():
@@ -9,6 +11,22 @@ def test_optional_template():
         body = 'hello world'
 
     Email().message()
+
+
+def test_body_required():
+    """
+    You must define either a body or a template.
+    """
+    with pytest.raises(MissingBody):
+        TemplatedEmailMessage().message()
+
+
+def test_empty_body():
+    """
+    If you explicitly set the body to an empty string, a MissingBody error
+    shouldn't be raised.
+    """
+    TemplatedEmailMessage(body='').message()
 
 
 def test_body_template():
