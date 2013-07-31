@@ -20,6 +20,16 @@ def test_body_template():
     assert email.body == 'hello world'
 
 
+def test_subject_template():
+    """
+    The subject can be a template.
+    """
+    email = TemplatedEmailMessage(subject='hello {{ name }}',
+                                  body='',
+                                  extra_context={'name': 'world'})
+    assert email.message()['Subject'] == 'hello world'
+
+
 def test_template():
     class Email(TemplatedEmailMessage):
         template_name = 'body.txt'
