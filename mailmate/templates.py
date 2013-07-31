@@ -1,6 +1,6 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import EmailMultiAlternatives
-from django.template import Context, loader
+from django.template import Template, Context, loader
 
 
 class TemplatedEmailMessage(EmailMultiAlternatives):
@@ -31,7 +31,7 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
                  extra_context=None):
 
         subject = self._get_value('subject', subject)
-        body = self._get_value('body', body)
+        self.body_template = self._get_value('body', body)
         from_email = self._get_value('from_email', from_email)
         to = self._get_value('to', to)
         bcc = self._get_value('bcc', bcc)
@@ -49,16 +49,13 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
                                                   html_template_name)
         self.extra_context = self._get_value('extra_context', extra_context)
 
-        if body is None:
-            body = self.render_body()
-
         alternatives = alternatives or []
         if self.html_template_name:
             alternatives.append((self.render_html_body(), 'text/html'))
 
         super(TemplatedEmailMessage, self).__init__(
             subject=subject,
-            body=body, from_email=from_email, to=to, bcc=bcc,
+            body=self.render_body(), from_email=from_email, to=to, bcc=bcc,
             connection=connection, attachments=attachments,
             headers=headers, alternatives=alternatives, **kwargs)
 
@@ -91,7 +88,10 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
         """
         Renders standard template with context
         """
-        template = loader.get_template(self.get_template_names()[0])
+        if self.body_template is None:
+            template = loader.get_template(self.get_template_names()[0])
+        else:
+            template = Template(self.body_template)
         return template.render(self.get_context())
 
     def render_html_body(self):
