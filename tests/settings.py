@@ -1,1 +1,3 @@
 SECRET_KEY = 'SEKRIT'
+
+INSTALLED_APPS = ('tests',)

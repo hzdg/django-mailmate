@@ -1,3 +1,3 @@
 # flake8: noqa
 from mailmate.pkgmeta import *
-from .templates import BaseTemplatedEmailMessage, TemplatedEmailMessage
+from .templates import TemplatedEmailMessage

@@ -1,95 +1,9 @@
-from django.core.exceptions import ImproperlyConfigured
 from django.core.mail import EmailMultiAlternatives
-from django.template import Context, loader
+from django.template import Template, Context, loader
+from .exceptions import MissingBody
 
 
-class BaseTemplatedEmailMessage(EmailMultiAlternatives):
-    """
-    """
-
-    def __init__(self, subject='', body='', from_email=None, to=None, bcc=None,
-                 connection=None, attachments=None, headers=None, alternatives=None,
-                 cc=None, template_name=None, html_template_name=None,
-                 extra_context=None):
-
-        subject = self._get_value('subject', subject)
-        body = self._get_value('body', body)
-        from_email = self._get_value('from_email', from_email)
-        to = self._get_value('to', to)
-        bcc = self._get_value('bcc', bcc)
-        connection = self._get_value('connection', connection)
-        attachments = self._get_value('attachments', attachments)
-        headers = self._get_value('headers', headers)
-        alternatives = self._get_value('alternatives', alternatives)
-        cc = self._get_value('cc', cc)
-        kwargs = {}
-        if cc:
-            kwargs['cc'] = cc
-
-        self.template_name = self._get_value('template_name', template_name)
-        self.html_template_name = self._get_value('html_template_name',
-                                                  html_template_name)
-        self.extra_context = self._get_value('extra_context', extra_context)
-
-        super(BaseTemplatedEmailMessage, self).__init__(
-            subject=subject,
-            body=body, from_email=from_email, to=to, bcc=bcc,
-            connection=connection, attachments=attachments,
-            headers=headers, alternatives=alternatives, **kwargs)
-
-    def get_template_names(self, *args, **kwargs):
-        """
-        Returns a list of "standard template" names. Must return a list.
-        """
-        if self.template_name is None:
-            raise ImproperlyConfigured(
-                "TemplatedEmailMessage requires either a definition of "
-                "'template' or an implementation of 'get_templates()'")
-        else:
-            return [self.template_name]
-
-    def get_html_template_names(self, *args, **kwargs):
-        """
-        Returns a list of "alternative template" names. Must return a list.
-        """
-        if self.html_template_name is not None:
-            return [self.html_template_name]
-        return None
-
-    def get_context_data(self, **kwargs):
-        context_data = self.extra_context.copy() if self.extra_context else {}
-        context_data.update(kwargs)
-        return context_data
-
-    def get_context(self, context_dict={}):
-        return Context(self.get_context_data(**context_dict))
-
-    def send(self, fail_silently=False):
-        self.body = self._render_template()
-        if self.get_html_template_names():
-            self.attach_alternative(self._render_html_template(), 'text/html')
-
-        return super(BaseTemplatedEmailMessage, self).send(fail_silently)
-
-    def _render_template(self):
-        """
-        Renders standard template with context
-        """
-        template = loader.get_template(self.get_template_names()[0])
-        return template.render(self.get_context())
-
-    def _render_html_template(self):
-        """
-        Renders alternative template with context
-        """
-        template = loader.get_template(self.get_html_template_names()[0])
-        return template.render(self.get_context())
-
-    def _get_value(self, attr, value):
-        return value or getattr(self.__class__, attr, None) or value
-
-
-class TemplatedEmailMessage(BaseTemplatedEmailMessage):
+class TemplatedEmailMessage(EmailMultiAlternatives):
     """
     example:
     In Emails.py
@@ -110,4 +24,73 @@ class TemplatedEmailMessage(BaseTemplatedEmailMessage):
         message = CoolMessage(extra_context={'user': 'You', 'is': 'Cool'})
         message.send()
     """
-    pass
+
+    def __init__(self, subject='', body=None, from_email=None, to=None, bcc=None,
+                 connection=None, attachments=None, headers=None, alternatives=None,
+                 cc=None, template_name=None, html_template_name=None,
+                 extra_context=None):
+
+        self.subject_template = self._get_value('subject', subject)
+        self.body_template = self._get_value('body', body)
+        from_email = self._get_value('from_email', from_email)
+        to = self._get_value('to', to)
+        bcc = self._get_value('bcc', bcc)
+        connection = self._get_value('connection', connection)
+        attachments = self._get_value('attachments', attachments)
+        headers = self._get_value('headers', headers)
+        alternatives = self._get_value('alternatives', alternatives)
+        cc = self._get_value('cc', cc)
+        kwargs = {}
+        if cc:
+            kwargs['cc'] = cc
+
+        self.template_name = self._get_value('template_name', template_name)
+        self.html_template_name = self._get_value('html_template_name',
+                                                  html_template_name)
+        self.extra_context = self._get_value('extra_context', extra_context)
+
+        alternatives = alternatives or []
+        html_body = self.render_html_body()
+        if html_body is not None:
+            alternatives.append((html_body, 'text/html'))
+
+        super(TemplatedEmailMessage, self).__init__(
+            subject=self.render_subject(),
+            body=self.render_body(), from_email=from_email, to=to, bcc=bcc,
+            connection=connection, attachments=attachments,
+            headers=headers, alternatives=alternatives, **kwargs)
+
+    def get_context_data(self):
+        return self.extra_context.copy() if self.extra_context else {}
+
+    def get_context(self):
+        return Context(self.get_context_data())
+
+    def render_body(self):
+        """
+        Renders standard template with context
+        """
+        if self.body_template is not None:
+            template = Template(self.body_template)
+        elif self.template_name is not None:
+            template = loader.get_template(self.template_name)
+        else:
+            raise MissingBody('The email does not have a body. Either provide'
+                              ' a body or template_name or, if you really want'
+                              ' to send an email without a body, set the body'
+                              ' to an empty string explicitly.')
+        return template.render(self.get_context())
+
+    def render_subject(self):
+        return Template(self.subject_template).render(self.get_context())
+
+    def render_html_body(self):
+        """
+        Renders alternative template with context
+        """
+        if self.html_template_name:
+            template = loader.get_template(self.html_template_name)
+            return template.render(self.get_context())
+
+    def _get_value(self, attr, value):
+        return value or getattr(self.__class__, attr, None) or value
