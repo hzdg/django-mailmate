@@ -30,7 +30,7 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
                  cc=None, template_name=None, html_template_name=None,
                  extra_context=None):
 
-        subject = self._get_value('subject', subject)
+        self.subject_template = self._get_value('subject', subject)
         self.body_template = self._get_value('body', body)
         from_email = self._get_value('from_email', from_email)
         to = self._get_value('to', to)
@@ -54,7 +54,7 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
             alternatives.append((self.render_html_body(), 'text/html'))
 
         super(TemplatedEmailMessage, self).__init__(
-            subject=subject,
+            subject=self.render_subject(),
             body=self.render_body(), from_email=from_email, to=to, bcc=bcc,
             connection=connection, attachments=attachments,
             headers=headers, alternatives=alternatives, **kwargs)
@@ -93,6 +93,9 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
         else:
             template = Template(self.body_template)
         return template.render(self.get_context())
+
+    def render_subject(self):
+        return Template(self.subject_template).render(self.get_context())
 
     def render_html_body(self):
         """
