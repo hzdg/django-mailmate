@@ -3,24 +3,39 @@ Setup
 
 ``pip install django-mailmate``
 
+
 How-To
 -----------------------------
 
-In emails.py ::
+In myapp.emails.py::
 
+    from mailmate.templates import TemplatedEmailMessage
 
-        from mailmate.templates import TemplatedEmailMessage
+    class MyEmail(TemplatedEmailMessage):
+        to = ['some-user@some-email.com']
+        from_email = 'no-reply@some-email.com'
+        subject = 'Hello, {{ name }}!'
+        body = 'Your position is: {{ position }}'
 
-        class CoolMessage(TemplatedEmailMessage):
-            to = ['some-user@some-email.com']
-            from_email = 'no-reply@some-email.com'
-            subject = 'Super Cool Message'
-            template_name = 'emails/text-template.txt'
-            html_template_name = 'emails/html-template.html'
+Elsewhere::
 
+    from myapp.emails import MyEmail
+    email = MyEmail(extra_context={'name': 'Christopher', 'position': 100})
+    email.send()
 
-In views.py ::
+You can also use separate template files for your email bodies::
 
+    class MyEmail(TemplatedEmailMessage):
+        to = ['some-user@some-email.com']
+        from_email = 'no-reply@some-email.com'
+        subject = 'Hello, {{ name }}!'
+        template_name = 'emails/my_email.txt'
 
-        from .emails import CoolMessage
-        CoolMessage(extra_context={'user': 'You', 'is': 'Cool'}).send()
+\...and easily specify an HTML template::
+
+    class MyEmail(TemplatedEmailMessage):
+        to = ['some-user@some-email.com']
+        from_email = 'no-reply@some-email.com'
+        subject = 'Hello, {{ name }}!'
+        template_name = 'emails/my_email.txt'
+        html_template_name = 'emails/my_email.html'
