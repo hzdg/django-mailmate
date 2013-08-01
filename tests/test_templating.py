@@ -52,3 +52,8 @@ def test_html_template():
 
     email = Email(extra_context={'name': 'world'})
     assert '<p>hello world</p>' in email.message().as_string()
+
+
+def test_autoplaintext():
+    email = TemplatedEmailMessage(html_template_name='simple_body.html')
+    assert email.body.strip() == 'hello world'

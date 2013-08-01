@@ -17,6 +17,8 @@ class PyTest(TestCommand):
 
     def run_tests(self):
         import pytest
+        # Make sure this package's tests module gets priority.
+        sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
         os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
         errno = pytest.main(self.test_args)
         sys.exit(errno)
@@ -70,6 +72,7 @@ setup(
     ],
     tests_require=[
         'pytest-django',
+        'markdownify',
     ],
     install_requires=[
         'Django>=1.2',
