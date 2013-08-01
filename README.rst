@@ -1,6 +1,11 @@
 django-mailmate
 ===============
 
+|Build Status|_
+
+.. |Build Status| image:: https://travis-ci.org/hzdg/django-mailmate.png?branch=master
+.. _Build Status: https://travis-ci.org/hzdg/django-mailmate
+
 Mailmate is a Django app comprised of tools to make dealing with emails easier.
 Its main feature is a simple, class-based way to define email messages using
 Django templates. Here's a quick sales pitch:
