@@ -74,6 +74,11 @@ setup(
     install_requires=[
         'Django>=1.2',
     ],
+    extras_require={
+        'autoplaintext': [
+            'markdownify',
+        ],
+    },
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
