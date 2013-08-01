@@ -14,7 +14,7 @@ class CleanEmailBackend(EmailBackend):
             .. code-block:: python
 
             #settings.py
-            EMAIL_BACKEND = 'mailmate.backend.CleanEmailBackend'
+            EMAIL_BACKEND = 'mailmate.backends.CleanEmailBackend'
             EMAIL_FILE_PATH = os.path.join(PROJECT_DIR, '../tmp', 'app-messages')
 
             Any email that is sent will be put in the project directorys tmp dir

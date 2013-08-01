@@ -73,3 +73,23 @@ constructor):
 The ``TemplatedEmailMessage`` class extends
 ``django.core.mail.EmailMultiAlternatives``, so you don't have to do anything
 special to use it with your favorite backend.
+
+
+CleanEmailBackend
+-----------------
+
+Mailmate also includes a special backend to help you debug your emails. It's
+like Django's ``django.core.mail.backends.filebased.EmailBackend``, but in
+addition to the *.log file, it will also save files containing the message body
+for each version of the message. For example, if you send an email that has both
+a plaintext and HTML version, it will save a *.log file (with the entire
+message), a *.txt file (with the plaintext body) and a *.html file (with the
+body of the HTML alternative).
+
+To use it, set your ``EMAIL_BACKEND`` and ``EMAIL_FILE_PATH`` settings in
+settings.py:
+
+.. code:: python
+
+    EMAIL_BACKEND = 'mailmate.backends.CleanEmailBackend'
+    EMAIL_FILE_PATH = '/path/to/messages/'
