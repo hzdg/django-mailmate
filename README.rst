@@ -79,6 +79,14 @@ The ``TemplatedEmailMessage`` class extends
 ``django.core.mail.EmailMultiAlternatives``, so you don't have to do anything
 special to use it with your favorite backend.
 
+If you install markdownify__, you can omit the plaintext version of your
+message; mailmate will generate one automatically from the HTML version.
+Otherwise, omitting both ``body`` and ``template_name`` will cause a MissingBody
+exception to be raised. If you want to send an email without a plaintext body,
+you must set ``body`` to an empty string explicitly.
+
+__ https://pypi.python.org/pypi/markdownify
+
 
 CleanEmailBackend
 -----------------
