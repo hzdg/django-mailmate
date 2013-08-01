@@ -1,41 +1,95 @@
-Setup
----------------------------
+django-mailmate
+===============
+
+Mailmate is a Django app comprised of tools to make dealing with emails easier.
+Its main feature is a simple, class-based way to define email messages using
+Django templates. Here's a quick sales pitch:
+
+.. code:: python
+
+    from mailmate import TemplatedEmailMessage
+
+    class MyEmail(TemplatedEmailMessage):
+        to = ['some-user@some-email.com']
+        from_email = 'no-reply@some-email.com'
+        subject = 'Hello, {{ name }}!'
+        template = 'emails/template.txt'
+
+    MyEmail(extra_context={'name': 'Jerry'}).send()
+
+
+Installation
+------------
 
 ``pip install django-mailmate``
 
 
-How-To
------------------------------
+TemplatedEmailMessage
+---------------------
 
-In myapp.emails.py::
+Extend ``TemplatedEmailMessage``, and set class attributes. You can override
+any of those attributes by passing keyword arguments to the constructor.
 
-    from mailmate.templates import TemplatedEmailMessage
+.. code:: python
 
-    class MyEmail(TemplatedEmailMessage):
-        to = ['some-user@some-email.com']
-        from_email = 'no-reply@some-email.com'
-        subject = 'Hello, {{ name }}!'
-        body = 'Your position is: {{ position }}'
-
-Elsewhere::
-
-    from myapp.emails import MyEmail
-    email = MyEmail(extra_context={'name': 'Christopher', 'position': 100})
-    email.send()
-
-You can also use separate template files for your email bodies::
+    from mailmate import TemplatedEmailMessage
 
     class MyEmail(TemplatedEmailMessage):
         to = ['some-user@some-email.com']
         from_email = 'no-reply@some-email.com'
-        subject = 'Hello, {{ name }}!'
-        template_name = 'emails/my_email.txt'
+        subject = 'Hello!'
+        template = 'emails/template.txt'
 
-\...and easily specify an HTML template::
+    MyEmail(to=['somebodyelse@somewhereelse.com']).send()
+
+You can use a template to define your email body (like in the above example), or
+define it as a string:
+
+.. code:: python
+
+    from mailmate import TemplatedEmailMessage
 
     class MyEmail(TemplatedEmailMessage):
         to = ['some-user@some-email.com']
-        from_email = 'no-reply@some-email.com'
-        subject = 'Hello, {{ name }}!'
-        template_name = 'emails/my_email.txt'
+        subject = "The subject is parsed as a {{ what }}"
+        body = "The body's also parsed as a {{ what }}."
+
+    MyEmail(extra_context={'what': 'Django template!'}).send()
+
+``TemplatedEmailMessage`` also makes it simple to create HTML emails. Simply add
+an ``html_template_name`` attribute to your class (or pass it to the
+constructor):
+
+.. code:: python
+
+    from mailmate import TemplatedEmailMessage
+
+    class MyEmail(TemplatedEmailMessage):
+        to = ['some-user@some-email.com']
+        subject = "The subject is parsed as a {{ what }}"
+        body = "The body's also parsed as a {{ what }}."
         html_template_name = 'emails/my_email.html'
+
+The ``TemplatedEmailMessage`` class extends
+``django.core.mail.EmailMultiAlternatives``, so you don't have to do anything
+special to use it with your favorite backend.
+
+
+CleanEmailBackend
+-----------------
+
+Mailmate also includes a special backend to help you debug your emails. It's
+like Django's ``django.core.mail.backends.filebased.EmailBackend``, but in
+addition to the \*.log file, it will also save files containing the message body
+for each version of the message. For example, if you send an email that has both
+a plaintext and HTML version, it will save a \*.log file (with the entire
+message), a \*.txt file (with the plaintext body) and a \*.html file (with the
+body of the HTML alternative).
+
+To use it, set your ``EMAIL_BACKEND`` and ``EMAIL_FILE_PATH`` settings in
+settings.py:
+
+.. code:: python
+
+    EMAIL_BACKEND = 'mailmate.backends.CleanEmailBackend'
+    EMAIL_FILE_PATH = '/path/to/messages/'
