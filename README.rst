@@ -10,7 +10,7 @@ Mailmate is a Django app comprised of tools to make dealing with emails easier.
 Its main feature is a simple, class-based way to define email messages using
 Django templates. Here's a quick sales pitch:
 
-.. code:: python
+.. code-block:: python
 
     from mailmate import TemplatedEmailMessage
 
@@ -35,7 +35,7 @@ TemplatedEmailMessage
 Extend ``TemplatedEmailMessage``, and set class attributes. You can override
 any of those attributes by passing keyword arguments to the constructor.
 
-.. code:: python
+.. code-block:: python
 
     from mailmate import TemplatedEmailMessage
 
@@ -50,7 +50,7 @@ any of those attributes by passing keyword arguments to the constructor.
 You can use a template to define your email body (like in the above example), or
 define it as a string:
 
-.. code:: python
+.. code-block:: python
 
     from mailmate import TemplatedEmailMessage
 
@@ -65,7 +65,7 @@ define it as a string:
 an ``html_template_name`` attribute to your class (or pass it to the
 constructor):
 
-.. code:: python
+.. code-block:: python
 
     from mailmate import TemplatedEmailMessage
 
@@ -94,7 +94,7 @@ body of the HTML alternative).
 To use it, set your ``EMAIL_BACKEND`` and ``EMAIL_FILE_PATH`` settings in
 settings.py:
 
-.. code:: python
+.. code-block:: python
 
     EMAIL_BACKEND = 'mailmate.backends.CleanEmailBackend'
     EMAIL_FILE_PATH = '/path/to/messages/'
