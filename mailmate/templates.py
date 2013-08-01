@@ -3,6 +3,10 @@ from django.template import Template, Context, loader
 from .exceptions import MissingBody
 
 
+ALLOWED_TAGS = ['a', 'b', 'i', 'strong', 'em', 'hr', 'blockquote', 'br', 'ol',
+                'ul', 'li', 'p', 'img'] + ['h%s' % n for n in range(1, 7)]
+
+
 class TemplatedEmailMessage(EmailMultiAlternatives):
     """
     example:
@@ -71,15 +75,26 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
         Renders standard template with context
         """
         if self.body_template is not None:
-            template = Template(self.body_template)
+            body = Template(self.body_template).render(self.get_context())
         elif self.template_name is not None:
-            template = loader.get_template(self.template_name)
+            body = loader.get_template(self.template_name).render(self.get_context())
         else:
-            raise MissingBody('The email does not have a body. Either provide'
-                              ' a body or template_name or, if you really want'
-                              ' to send an email without a body, set the body'
-                              ' to an empty string explicitly.')
-        return template.render(self.get_context())
+            body = None
+            try:
+                from markdownify import markdownify
+            except ImportError:
+                pass
+            else:
+                html_body = self.render_html_body()
+                if html_body is not None:
+                    body = markdownify(html_body, convert=ALLOWED_TAGS)
+            if body is None:
+                raise MissingBody('The email does not have a body. Either'
+                                  ' provide a body or template_name or, if you'
+                                  ' really want to send an email without a'
+                                  ' body, set the body to an empty string'
+                                  ' explicitly.')
+        return body
 
     def render_subject(self):
         return Template(self.subject_template).render(self.get_context())
