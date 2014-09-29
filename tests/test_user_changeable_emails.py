@@ -30,6 +30,29 @@ def AwesomeMessage():
     return AwesomeMessage
 
 
+@pytest.fixture
+def UserFriendlyMessage():
+    from mailmate.templates import ConfigurableEmail
+
+    class UserFriendlyMessage(ConfigurableEmail):
+        from_email = 'no-reply@face.net'
+        to = ['blah-a@gmail.com', 'blah-b@gmail.com']
+        subject = '%s has a reply about this'
+        template_name = 'body.txt'
+        html_template_name = 'body.html'
+        email_name = 'Super Awesome Message'
+
+    return UserFriendlyMessage
+
+
+@pytest.mark.django_db
+def test_user_friendly_message(UserFriendlyMessage):
+    UserFriendlyMessage()
+
+    from mailmate.models import Email
+    assert Email.objects.get(email_name='Super Awesome Message')
+
+
 @pytest.mark.django_db
 def test_message_customization(AwesomeMessage):
 
