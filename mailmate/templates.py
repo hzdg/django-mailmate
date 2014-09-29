@@ -1,6 +1,7 @@
 from django.core.mail import EmailMultiAlternatives
 from django.template import Template, Context, loader
 from .exceptions import MissingBody
+from .models import Email
 
 
 ALLOWED_TAGS = ['a', 'b', 'i', 'strong', 'em', 'hr', 'blockquote', 'br', 'ol',
@@ -109,3 +110,30 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
 
     def _get_value(self, attr, value):
         return value or getattr(self.__class__, attr, None) or value
+
+
+class ConfigurableEmail(TemplatedEmailMessage):
+
+    def __init__(self, *args, **kwargs):
+
+        def get_attribute(options, attribute, instance):
+            return options.get(attribute) or getattr(instance, attribute, None)
+
+        self.storage, self.created = Email.objects.get_or_create(
+            email_name=self.__class__.__name__
+        )
+
+        if self.created:
+
+            self.storage.from_email = get_attribute(kwargs, 'from_email', self)
+            self.storage.subject = get_attribute(kwargs, 'subject', self)
+            self.storage.save()
+
+            for address in get_attribute(kwargs, 'to', self):
+                self.storage.receivers.get_or_create(address=address)
+
+        kwargs['to'] = self.storage.receivers.values_list('address', flat=True)
+        kwargs['subject'] = self.storage.subject
+        kwargs['from_email'] = self.storage.from_email
+
+        super(ConfigurableEmail, self).__init__(*args, **kwargs)
