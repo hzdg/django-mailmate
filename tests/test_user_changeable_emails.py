@@ -52,13 +52,16 @@ def test_user_friendly_message(UserFriendlyMessage):
     from mailmate.models import Email
     assert Email.objects.get(email_name='Super Awesome Message')
 
+@pytest.fixture
+def configureable_message(db, AwesomeMessage):
+    return AwesomeMessage()
+
 
 @pytest.mark.django_db
-def test_message_customization(AwesomeMessage):
+def test_message_customization(configureable_message, AwesomeMessage):
 
-    message = AwesomeMessage()
-    assert message.subject == '%s has a reply about this'
-    assert message.storage.receivers.count() == 2
+    assert configureable_message.subject == '%s has a reply about this'
+    assert configureable_message.storage.receivers.count() == 2
 
     from mailmate.models import Email
     awesome_message = Email.objects.get(email_name='AwesomeMessage')
@@ -77,6 +80,27 @@ def test_message_customization(AwesomeMessage):
         'blah-b@gmail.com',
         'test@example.com'
     ]
+
+
+@pytest.mark.django_db
+def test_passable_to_arguments(AwesomeMessage):
+    message = AwesomeMessage(to=['something-else@gmail.com'])
+    assert message.to == ['something-else@gmail.com']
+    assert AwesomeMessage().to == ['blah-a@gmail.com', 'blah-b@gmail.com']
+
+
+@pytest.mark.django_db
+def test_passable_from_email_arguments(AwesomeMessage):
+    message = AwesomeMessage(from_email='something-else@gmail.com')
+    assert message.from_email == 'something-else@gmail.com'
+    assert AwesomeMessage().from_email == 'no-reply@face.net'
+
+
+@pytest.mark.django_db
+def test_passable_subject_arguments(AwesomeMessage):
+    message = AwesomeMessage(subject='Change of Subject')
+    assert message.subject == 'Change of Subject'
+    assert AwesomeMessage().subject == '%s has a reply about this'
 
 
 def test_reusable_created(configurable_email):

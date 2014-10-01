@@ -117,7 +117,7 @@ class ConfigurableEmail(TemplatedEmailMessage):
     def __init__(self, *args, **kwargs):
 
         def get_attribute(options, attribute, instance):
-            return options.get(attribute) or getattr(instance, attribute, None)
+            return getattr(instance, attribute, None) or options.get(attribute)
 
         self.storage, self.created = Email.objects.get_or_create(
             email_name=getattr(self, 'email_name', self.__class__.__name__)
