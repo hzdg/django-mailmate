@@ -29,10 +29,17 @@
 
 """
 from django.db import models
+from .strings import (
+    IS_TESTING_HELP_TEXT,
+    IS_TEST_USER_HELP_TEXT,
+    IS_ENABLED_HELP_TEXT
+)
 
 
 class Receiver(models.Model):
     address = models.EmailField()
+    is_test_user = models.BooleanField(default=False,
+                                       help_text=IS_TEST_USER_HELP_TEXT)
 
 
 class Email(models.Model):
@@ -40,5 +47,10 @@ class Email(models.Model):
     email_name = models.CharField(max_length=100)
     from_email = models.EmailField(blank=True)
     subject = models.CharField(max_length=200, blank=True)
-    is_enabled = models.BooleanField(default=True)
+    is_enabled = models.BooleanField(default=True,
+                                     help_text=IS_ENABLED_HELP_TEXT)
+
+    is_testing = models.BooleanField(default=False,
+                                     help_text=IS_TESTING_HELP_TEXT)
+
     receivers = models.ManyToManyField(Receiver)
