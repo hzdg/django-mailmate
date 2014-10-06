@@ -37,9 +37,15 @@ from .strings import (
 
 
 class Receiver(models.Model):
-    address = models.EmailField()
+    address = models.EmailField(unique=True)
     is_test_user = models.BooleanField(
         default=False, help_text=IS_TEST_USER_HELP_TEXT)
+
+    def __unicode__(self):
+        return self.address
+
+    class Meta:
+        ordering = ('-is_test_user', )
 
 
 class Email(models.Model):
@@ -54,3 +60,6 @@ class Email(models.Model):
                                      help_text=IS_TESTING_HELP_TEXT)
 
     receivers = models.ManyToManyField(Receiver)
+
+    def __unicode__(self):
+        return self.email_name
