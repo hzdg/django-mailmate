@@ -52,9 +52,20 @@ def test_user_friendly_message(UserFriendlyMessage):
     from mailmate.models import Email
     assert Email.objects.get(email_name='Super Awesome Message')
 
+
 @pytest.fixture
 def configureable_message(db, AwesomeMessage):
     return AwesomeMessage()
+
+
+@pytest.fixture
+def testing_message(db, AwesomeMessage):
+    message = AwesomeMessage()
+    message.storage.is_testing = True
+    message.storage.save()
+    message.storage.receivers.create(
+        address='testing@hzdg.com', is_test_user=True)
+    return AwesomeMessage
 
 
 @pytest.mark.django_db
@@ -94,6 +105,17 @@ def test_passable_from_email_arguments(AwesomeMessage):
     message = AwesomeMessage(from_email='something-else@gmail.com')
     assert message.from_email == 'something-else@gmail.com'
     assert AwesomeMessage().from_email == 'no-reply@face.net'
+
+
+@pytest.mark.django_db
+def test_testing_email(testing_message):
+    message = testing_message()
+    assert message.to == ['testing@hzdg.com']
+    message.storage.is_testing = False
+    message.storage.save()
+
+    new_message = testing_message()
+    assert new_message.to == ['blah-a@gmail.com', 'blah-b@gmail.com']
 
 
 @pytest.mark.django_db
