@@ -31,14 +31,14 @@
 from django.db import models
 
 
+class Receiver(models.Model):
+    address = models.EmailField()
+
+
 class Email(models.Model):
 
     email_name = models.CharField(max_length=100)
     from_email = models.EmailField(blank=True)
     subject = models.CharField(max_length=200, blank=True)
     is_enabled = models.BooleanField(default=True)
-
-
-class Receiver(models.Model):
-    email = models.ForeignKey(Email, related_name='receivers')
-    address = models.EmailField()
+    receivers = models.ManyToManyField(Receiver)
