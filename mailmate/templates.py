@@ -139,3 +139,9 @@ class ConfigurableEmail(TemplatedEmailMessage):
             'from_email', self.storage.from_email)
 
         super(ConfigurableEmail, self).__init__(*args, **kwargs)
+
+    def send(self, *args, **kwargs):
+        if not self.storage.is_enabled:
+            return
+        else:
+            super(ConfigurableEmail, self).send(*args, **kwargs)
