@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Email, Receiver
+from .models import Email, User
 
 
-class ReceiverAdmin(admin.ModelAdmin):
+class UserAdmin(admin.ModelAdmin):
     pass
 
 
@@ -11,4 +11,4 @@ class EmailAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Email, EmailAdmin)
-admin.site.register(Receiver, ReceiverAdmin)
+admin.site.register(User, UserAdmin)

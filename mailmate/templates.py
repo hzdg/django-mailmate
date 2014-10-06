@@ -130,15 +130,15 @@ class ConfigurableEmail(TemplatedEmailMessage):
             self.storage.save()
 
             for address in get_attribute(kwargs, 'to', self):
-                self.storage.receivers.get_or_create(address=address)
+                self.storage.users.get_or_create(address=address)
 
         if self.storage.is_testing:
             kwargs['to'] = kwargs.get(
-                'to', self.storage.receivers.filter(
+                'to', self.storage.users.filter(
                     is_test_user=True).values_list('address', flat=True))
         else:
             kwargs['to'] = kwargs.get(
-                'to', self.storage.receivers.filter(
+                'to', self.storage.users.filter(
                     is_test_user=False).values_list('address', flat=True))
 
         kwargs['subject'] = kwargs.get('subject', self.storage.subject)

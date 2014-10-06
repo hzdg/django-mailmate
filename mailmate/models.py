@@ -36,7 +36,7 @@ from .strings import (
 )
 
 
-class Receiver(models.Model):
+class User(models.Model):
     address = models.EmailField(unique=True)
     is_test_user = models.BooleanField(
         default=False, help_text=IS_TEST_USER_HELP_TEXT)
@@ -59,7 +59,7 @@ class Email(models.Model):
     is_testing = models.BooleanField('Testing', default=False,
                                      help_text=IS_TESTING_HELP_TEXT)
 
-    receivers = models.ManyToManyField(Receiver)
+    users = models.ManyToManyField(User)
 
     def __unicode__(self):
         return self.email_name
