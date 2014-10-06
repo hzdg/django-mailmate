@@ -138,7 +138,8 @@ class ConfigurableEmail(TemplatedEmailMessage):
                     is_test_user=True).values_list('address', flat=True))
         else:
             kwargs['to'] = kwargs.get(
-                'to', self.storage.receivers.values_list('address', flat=True))
+                'to', self.storage.receivers.filter(
+                    is_test_user=False).values_list('address', flat=True))
 
         kwargs['subject'] = kwargs.get('subject', self.storage.subject)
         kwargs['from_email'] = kwargs.get(
