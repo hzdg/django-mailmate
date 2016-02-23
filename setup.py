@@ -5,8 +5,8 @@ import sys
 
 
 pkgmeta = {}
-execfile(os.path.join(os.path.dirname(__file__),
-         'mailmate', 'pkgmeta.py'), pkgmeta)
+exec(open(os.path.join(os.path.dirname(__file__),
+         'mailmate', 'pkgmeta.py')).read(), pkgmeta)
 
 
 class PyTest(TestCommand):
