@@ -123,15 +123,6 @@ class ConfigurableEmail(TemplatedEmailMessage):
             email_name=getattr(self, 'email_name', self.__class__.__name__)
         )
 
-        if self.created:
-
-            self.storage.from_email = get_attribute(kwargs, 'from_email', self)
-            self.storage.subject = get_attribute(kwargs, 'subject', self)
-            self.storage.save()
-
-            for address in get_attribute(kwargs, 'to', self):
-                self.storage.users.get_or_create(address=address)
-
         if self.storage.is_testing:
             kwargs['to'] = kwargs.get(
                 'to', self.storage.users.filter(
