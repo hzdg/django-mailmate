@@ -107,7 +107,7 @@ settings.py:
     EMAIL_BACKEND = 'mailmate.backends.CleanEmailBackend'
     EMAIL_FILE_PATH = '/path/to/messages/'
 
-Add to Django admin
+Add to Django Admin
 -------------------
 
 Add MailMate to Django Admin to make changes and override your email classes.
@@ -130,5 +130,5 @@ then register your email to the admin with:
     register(MyRandomEmail)
 
 voila! your email should automatically show up in the admin and you can then
-override you default email class. Please not that your email class has to
-be a sub class of ``ConfigurableEmail``
+override you default email class. Please note that your email class has to
+be a subclass of ``ConfigurableEmail``
