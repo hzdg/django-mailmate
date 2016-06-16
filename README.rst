@@ -18,7 +18,7 @@ Django templates. Here's a quick sales pitch:
         to = ['some-user@some-email.com']
         from_email = 'no-reply@some-email.com'
         subject = 'Hello, {{ name }}!'
-        template = 'emails/template.txt'
+        template_name = 'emails/template.txt'
 
     MyEmail(extra_context={'name': 'Jerry'}).send()
 
@@ -43,7 +43,7 @@ any of those attributes by passing keyword arguments to the constructor.
         to = ['some-user@some-email.com']
         from_email = 'no-reply@some-email.com'
         subject = 'Hello!'
-        template = 'emails/template.txt'
+        template_name = 'emails/template.txt'
 
     MyEmail(to=['somebodyelse@somewhereelse.com']).send()
 
