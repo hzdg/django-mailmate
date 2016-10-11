@@ -132,3 +132,10 @@ then register your email to the admin with:
 voila! your email should automatically show up in the admin and you can then
 override you default email class. Please note that your email class has to
 be a subclass of ``ConfigurableEmail``
+
+NOTE: that when ``Emails`` Form has testing checked in Admin, only selected `Users`
+associated with that form with testing checked will get the email.
+
+NOTE: If a ``User`` has testing checked,
+the User will not receive an Email when the Email Form does not have testing
+checked.
