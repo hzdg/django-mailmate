@@ -72,7 +72,6 @@ def testing_message(db, AwesomeMessage):
 def test_message_customization(configureable_message, AwesomeMessage):
 
     assert configureable_message.subject == '%s has a reply about this'
-    assert configureable_message.storage.users.count() == 2
 
     from mailmate.models import Email
     awesome_message = Email.objects.get(email_name='AwesomeMessage')
@@ -85,11 +84,8 @@ def test_message_customization(configureable_message, AwesomeMessage):
 
     message = AwesomeMessage()
     assert message.subject == 'It cherged ermegerd'
-    assert message.storage.users.count() == 3
     assert message.to == [
-        'blah-a@gmail.com',
-        'blah-b@gmail.com',
-        'test@example.com'
+        'test@example.com',
     ]
 
 
@@ -130,5 +126,4 @@ def test_reusable_created(configurable_email):
 
 
 def test_email_to_saved(configurable_email):
-    assert configurable_email.storage.users.count() == 2
     assert configurable_email.to == ['blah-a@gmail.com', 'blah-b@gmail.com']
