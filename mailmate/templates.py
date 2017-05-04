@@ -79,7 +79,10 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
         elif self.template_name is not None:
             body = loader.get_template(self.template_name).render(self.get_context())
         else:
-            body = None
+            try:
+                body = self.body
+            except AttributeError:
+                body = None
             try:
                 from markdownify import markdownify
             except ImportError:
