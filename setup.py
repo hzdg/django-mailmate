@@ -71,7 +71,7 @@ setup(
         'flake8',
     ],
     tests_require=[
-        'pytest-django',
+        'pytest-django==2.6',
         'markdownify',
     ],
     install_requires=[
