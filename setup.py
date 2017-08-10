@@ -67,12 +67,11 @@ setup(
     url='http://github.com/hzdg/django-mailmate',
     long_description=open('README.rst').read(),
     zip_safe=False,
-    setup_requires=[
-        'flake8',
-    ],
+    setup_requires=[],
     tests_require=[
         'pytest-django==2.6',
         'markdownify',
+        'flake8',
     ],
     install_requires=[
         'Django>=1.2',
