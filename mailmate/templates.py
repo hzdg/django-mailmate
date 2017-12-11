@@ -2,9 +2,10 @@ from django.core.mail import EmailMultiAlternatives
 from django.template import Template, Context, loader
 from .exceptions import MissingBody
 
-
-ALLOWED_TAGS = ['a', 'b', 'i', 'strong', 'em', 'hr', 'blockquote', 'br', 'ol',
-                'ul', 'li', 'p', 'img'] + ['h%s' % n for n in range(1, 7)]
+ALLOWED_TAGS = [
+    'a', 'b', 'i', 'strong', 'em', 'hr', 'blockquote', 'br', 'ol', 'ul', 'li',
+    'p', 'img'
+] + ['h%s' % n for n in range(1, 7)]
 
 
 class TemplatedEmailMessage(EmailMultiAlternatives):
@@ -29,9 +30,19 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
         message.send()
     """
 
-    def __init__(self, subject='', body=None, from_email=None, to=None, bcc=None,
-                 connection=None, attachments=None, headers=None, alternatives=None,
-                 cc=None, template_name=None, html_template_name=None,
+    def __init__(self,
+                 subject='',
+                 body=None,
+                 from_email=None,
+                 to=None,
+                 bcc=None,
+                 connection=None,
+                 attachments=None,
+                 headers=None,
+                 alternatives=None,
+                 cc=None,
+                 template_name=None,
+                 html_template_name=None,
                  extra_context=None):
 
         self.subject_template = self._get_value('subject', subject)
@@ -60,9 +71,15 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
 
         super(TemplatedEmailMessage, self).__init__(
             subject=self.render_subject(),
-            body=self.render_body(), from_email=from_email, to=to, bcc=bcc,
-            connection=connection, attachments=attachments,
-            headers=headers, alternatives=alternatives, **kwargs)
+            body=self.render_body(),
+            from_email=from_email,
+            to=to,
+            bcc=bcc,
+            connection=connection,
+            attachments=attachments,
+            headers=headers,
+            alternatives=alternatives,
+            **kwargs)
 
     def get_context_data(self):
         return self.extra_context.copy() if self.extra_context else {}
