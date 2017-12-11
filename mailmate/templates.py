@@ -77,7 +77,8 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
         if self.body_template is not None:
             body = Template(self.body_template).render(self.get_context())
         elif self.template_name is not None:
-            body = loader.get_template(self.template_name).render(self.get_context())
+            body = loader.get_template(self.template_name).render(
+                self.get_context_data())
         else:
             try:
                 body = self.body
