@@ -1,3 +1,3 @@
 SECRET_KEY = 'SEKRIT'
 
-INSTALLED_APPS = ('tests',)
+INSTALLED_APPS = ('tests', )
