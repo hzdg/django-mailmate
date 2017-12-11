@@ -6,7 +6,6 @@ import os
 
 class CleanEmailBackend(EmailBackend):
     """ Takes email messages and splits there parts into clean messages """
-
     '''
             Example
             --------
@@ -28,7 +27,8 @@ class CleanEmailBackend(EmailBackend):
     def _write_file(self, contents, ext):
         filename, old_ext = os.path.splitext(self._get_filename())
         output_filename = u'%s%s' % (filename, ext)
-        fp = open(output_filename, 'w')
+        print(output_filename)
+        fp = open(output_filename, 'wb')
         fp.write(contents)
         fp.close()
 
@@ -38,7 +38,8 @@ class CleanEmailBackend(EmailBackend):
                 self._write_message(m)
         else:
             content_type = message.get_content_type()
-            ext = '.txt' if content_type == 'text/plain' else mimetypes.guess_extension(content_type)
+            ext = '.txt' if content_type == 'text/plain' else mimetypes.guess_extension(
+                content_type)
             if ext:
                 self._write_file(message.get_payload(decode=True), ext)
 
