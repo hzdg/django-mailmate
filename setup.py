@@ -3,10 +3,10 @@ from setuptools import setup, find_packages, Command
 from setuptools.command.test import test as TestCommand
 import sys
 
-
 pkgmeta = {}
-execfile(os.path.join(os.path.dirname(__file__),
-         'mailmate', 'pkgmeta.py'), pkgmeta)
+exec (open(
+    os.path.join(os.path.dirname(__file__), 'mailmate', 'pkgmeta.py')).read(),
+      pkgmeta)
 
 
 class PyTest(TestCommand):
@@ -92,5 +92,4 @@ setup(
     cmdclass={
         'test': PyTest,
         'lint': LintCommand,
-    },
-)
+    }, )
