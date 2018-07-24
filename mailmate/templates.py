@@ -126,7 +126,7 @@ class TemplatedEmailMessage(EmailMultiAlternatives):
         """
         if self.html_template_name:
             template = loader.get_template(self.html_template_name)
-            return template.render(self.get_context())
+            return template.render(self.get_context_data())
 
     def _get_value(self, attr, value):
         return value or getattr(self.__class__, attr, None) or value
