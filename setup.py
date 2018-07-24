@@ -74,7 +74,7 @@ setup(
         'flake8',
     ],
     install_requires=[
-        'Django>=1.2',
+        'Django>=1.8',
     ],
     extras_require={
         'autoplaintext': [
